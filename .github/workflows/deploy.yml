@@ -17,7 +17,15 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ vars.VITE_SUPABASE_PUBLISHABLE_KEY }}
     steps:
+      - name: Verify Supabase configuration
+        run: |
+          test -n "$VITE_SUPABASE_URL" || { echo "::error::Repository variable VITE_SUPABASE_URL is not set"; exit 1; }
+          test -n "$VITE_SUPABASE_PUBLISHABLE_KEY" || { echo "::error::Repository variable VITE_SUPABASE_PUBLISHABLE_KEY is not set"; exit 1; }
+
       - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v5
